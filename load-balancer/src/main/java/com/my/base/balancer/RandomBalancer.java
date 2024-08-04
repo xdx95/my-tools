@@ -1,6 +1,6 @@
-package com.xdx.balancer;
+package com.my.base.balancer;
 
-import com.xdx.balancer.server.Server;
+import com.my.base.balancer.server.Server;
 import java.util.List;
 
 /**

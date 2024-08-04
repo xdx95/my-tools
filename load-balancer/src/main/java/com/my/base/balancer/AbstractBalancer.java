@@ -1,6 +1,6 @@
-package com.xdx.balancer;
+package com.my.base.balancer;
 
-import com.xdx.balancer.server.Server;
+import com.my.base.balancer.server.Server;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,12 +40,12 @@ public abstract class AbstractBalancer implements LoadBalancer<Server> {
 	}
 
 	@Override
-	public Server getServer() {
+	public Server nextServer() {
 		return null;
 	}
 
 	@Override
-	public Server getHealthyServer() {
+	public Server nextHealthyServer() {
 		return null;
 	}
 
