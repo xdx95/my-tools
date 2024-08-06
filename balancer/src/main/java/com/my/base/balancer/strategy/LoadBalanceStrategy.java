@@ -9,18 +9,8 @@ import java.util.List;
  */
 public interface LoadBalanceStrategy<T> {
 
-	LoadBalanceStrategy<T> addServer(T t);
+	T nextServer(List<T> servers);
 
-	void addServer(List<T> list);
-
-	List<T> allServer();
-
-	T nextServer();
-
-	T nextHealthyServer();
-
-	void markServerUp(T t);
-
-	void markServerDown(T t);
+	T nextHealthyServer(List<T> servers);
 
 }

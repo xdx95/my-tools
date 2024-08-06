@@ -10,7 +10,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>load-balancer</module>
+        <module>balancer</module>
         <module>utils</module>
     </modules>
 
@@ -26,12 +26,11 @@
             <artifactId>slf4j-api</artifactId>
             <version>1.7.36</version>
         </dependency>
-
         <!-- Logback Classic Implementation -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.10</version> <!-- 请检查最新版本 -->
+            <version>1.2.10</version>
         </dependency>
     </dependencies>
 
