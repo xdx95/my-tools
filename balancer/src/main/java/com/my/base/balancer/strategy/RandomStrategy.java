@@ -1,6 +1,6 @@
 package com.my.base.balancer.strategy;
 
-import com.my.base.balancer.server.Server;
+import com.my.base.balancer.Server;
 import java.util.List;
 
 /**
@@ -11,11 +11,17 @@ import java.util.List;
 public class RandomStrategy extends AbstractStrategy {
 
 	@Override
-	public Server nextServer(List<Server> servers) {
-		if (servers == null || servers.isEmpty()) {
+	public StrategyEnums strategy() {
+		return StrategyEnums.RANDOM;
+	}
+
+	@Override
+	public Server nextHealthyServer() {
+		List<Server> servers = healthyServers();
+		if (isNoAvailableServers(servers)) {
 			return null;
 		}
-		int randomIndex = (int) (Math.random() * servers.size());
+		int randomIndex =context.random().nextInt(servers.size());
 		return servers.get(randomIndex);
 	}
 }

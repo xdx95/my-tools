@@ -1,8 +1,7 @@
 package com.my.base.balancer.strategy;
 
-import com.my.base.balancer.server.Server;
+import com.my.base.balancer.Server;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author: xdx
@@ -11,14 +10,18 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class RoundRobinStrategy extends AbstractStrategy {
 
-	private final AtomicInteger index = new AtomicInteger(0);
+	@Override
+	public StrategyEnums strategy() {
+		return StrategyEnums.ROUND_ROBIN;
+	}
 
 	@Override
-	public Server nextServer(List<Server> servers) {
-		if (servers == null || servers.isEmpty()) {
+	public Server nextHealthyServer() {
+		List<Server> servers = healthyServers();
+		if (isNoAvailableServers(servers)) {
 			return null;
 		}
-		int idx = index.getAndIncrement() % servers.size();
+		int idx = context.roundRobinIndex().getAndIncrement() % servers.size();
 		return servers.get(idx);
 	}
 }

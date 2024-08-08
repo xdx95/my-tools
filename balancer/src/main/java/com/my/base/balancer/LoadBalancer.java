@@ -1,60 +1,50 @@
 package com.my.base.balancer;
 
-import com.my.base.balancer.server.HealthChecker;
-import com.my.base.balancer.server.Server;
+import com.my.base.balancer.checker.HealthChecker;
 import com.my.base.balancer.strategy.LoadBalanceStrategy;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * LoadBalancingStrategy 负载均衡策略
- *
  * @author: xdx
  * @date: 2024/7/12
  * @description: 负载均衡器
  */
-public class LoadBalancer {
+public class LoadBalancer implements Balancer<Server> {
 
-	private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-	private final HealthChecker healthChecker;
+	private static final Logger log = LoggerFactory.getLogger(LoadBalancer.class);
+
+	private final LoadBalancerContext<Server> context;
 	private final LoadBalanceStrategy<Server> loadBalanceStrategy;
-	private final List<Server> severs;
+	private final HealthChecker<Server> healthChecker;
 
-
-	public Server nextServer() {
-		return loadBalanceStrategy.nextServer(severs);
-	}
-
+	@Override
 	public Server nextHealthyServer() {
-		return loadBalanceStrategy.nextHealthyServer(severs);
+		return loadBalanceStrategy.nextHealthyServer();
 	}
 
-
-	public LoadBalancer(LoadBalanceStrategy<Server> loadBalanceStrategy,
-		HealthChecker healthChecker,
-		List<Server> severs) {
+	public LoadBalancer(
+		LoadBalancerContext<Server> context,
+		LoadBalanceStrategy<Server> loadBalanceStrategy,
+		HealthChecker<Server> healthChecker,
+		List<Server> servers) {
+		assert context != null;
+		this.context = context == null ? new LoadBalancerContext<>() : context;
+		assert loadBalanceStrategy != null;
 		this.loadBalanceStrategy = loadBalanceStrategy;
+		this.context.setStrategy(loadBalanceStrategy.strategy());
+		assert healthChecker != null;
 		this.healthChecker = healthChecker;
-		this.severs = severs;
-		// 启动服务健康检查任务
-		checkHealthy();
+		assert servers != null;
+		this.context.servers().addAll(servers);
 	}
 
-	//
-	private void checkHealthy(){
-		executor.scheduleWithFixedDelay(()->{
-			severs.forEach(server -> {
-				if(!server.isHealthy()){
-					healthChecker.isHealthy(server);
-				}
-			});
-		},10,10, TimeUnit.SECONDS);
-
+	public void init() {
+		loadBalanceStrategy.setContext(context);
+		healthChecker.start(context);
 	}
-
 
 	public static LoadBalancerBuilder builder() {
 		return new LoadBalancerBuilder();
@@ -62,32 +52,46 @@ public class LoadBalancer {
 
 	public static class LoadBalancerBuilder {
 
+		private LoadBalancerContext<Server> context;
 		private LoadBalanceStrategy<Server> loadBalanceStrategy;
-		private HealthChecker healthChecker;
-		private final List<Server> severs = new CopyOnWriteArrayList<>();
+		private HealthChecker<Server> healthChecker;
+		private List<Server> servers;
 
-		public LoadBalancerBuilder loadBalanceStrategy(LoadBalanceStrategy<Server> loadBalanceStrategy) {
+		public LoadBalancerBuilder context(LoadBalancerContext<Server> context) {
+			this.context = context;
+			return this;
+		}
+
+		public LoadBalancerBuilder loadBalanceStrategy(
+			LoadBalanceStrategy<Server> loadBalanceStrategy) {
 			this.loadBalanceStrategy = loadBalanceStrategy;
 			return this;
 		}
 
-		public LoadBalancerBuilder healthChecker(HealthChecker healthChecker) {
+		public LoadBalancerBuilder healthChecker(HealthChecker<Server> healthChecker) {
 			this.healthChecker = healthChecker;
 			return this;
 		}
 
 		public LoadBalancerBuilder addServer(Server server) {
-			severs.add(server);
+			if (servers == null) {
+				servers = new ArrayList<>();
+			}
+			servers.add(server);
 			return this;
 		}
 
 		public LoadBalancerBuilder addServer(List<Server> severList) {
-			severs.addAll(severList);
+			if (servers == null) {
+				servers = new ArrayList<>();
+			}
+			servers.addAll(severList);
 			return this;
 		}
 
 		public LoadBalancer build() {
-			return new LoadBalancer(this.loadBalanceStrategy,healthChecker, this.severs);
+			return new LoadBalancer(
+				this.context, this.loadBalanceStrategy, this.healthChecker, this.servers);
 		}
 	}
 

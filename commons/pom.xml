@@ -9,13 +9,6 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>balancer</artifactId>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.my.base</groupId>
-            <artifactId>commons</artifactId>
-        </dependency>
-    </dependencies>
+    <artifactId>commons</artifactId>
 
 </project>

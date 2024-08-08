@@ -1,5 +1,6 @@
 package com.my.base.balancer.strategy;
 
+import com.my.base.balancer.LoadBalancerContext;
 import java.util.List;
 
 /**
@@ -9,8 +10,10 @@ import java.util.List;
  */
 public interface LoadBalanceStrategy<T> {
 
-	T nextServer(List<T> servers);
+	StrategyEnums strategy();
 
-	T nextHealthyServer(List<T> servers);
+	void setContext(LoadBalancerContext<T> context);
+
+	T nextHealthyServer();
 
 }
