@@ -14,11 +14,11 @@
     <dependencies>
         <dependency>
             <groupId>com.my.tools</groupId>
-            <artifactId>mytool-log</artifactId>
+            <artifactId>mytool-thread</artifactId>
         </dependency>
         <dependency>
             <groupId>com.my.tools</groupId>
-            <artifactId>mytool-thread</artifactId>
+            <artifactId>mytool-log</artifactId>
         </dependency>
     </dependencies>
 

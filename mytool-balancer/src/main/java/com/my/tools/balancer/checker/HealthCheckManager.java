@@ -4,7 +4,7 @@ import com.my.tools.balancer.context.BalancerContext;
 import com.my.tools.balancer.server.Server;
 import com.my.tools.balancer.strategy.StrategyEnums;
 import com.my.tools.log.LogUtils;
-import com.my.tools.thread.DefaultThreadFactory;
+import com.my.tools.thread.ThreadUtils;
 import java.util.Comparator;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -21,7 +21,7 @@ public class HealthCheckManager {
 	private static final Logger log = LogUtils.get();
 
 	private final ScheduledExecutorService
-		executor = Executors.newScheduledThreadPool(1, new DefaultThreadFactory("b-check"));
+		executor = Executors.newScheduledThreadPool(1, ThreadUtils.getDefaultThreadFactory());
 
 	private final BalancerContext context;
 	private final HealthChecker checker;
