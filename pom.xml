@@ -26,8 +26,8 @@
         <module>mytool-base</module>
         <module>mytool-thread</module>
         <module>mytool-balancer</module>
-        <module>tools-all</module>
         <module>tools-bom</module>
+        <module>mytool-monitor</module>
     </modules>
 
     <!--全局依赖-->
