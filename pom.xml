@@ -27,8 +27,9 @@
         <module>mytool-base</module>
         <module>mytool-thread</module>
         <module>mytool-balancer</module>
-        <module>tools-bom</module>
         <module>mytool-monitor</module>
+        <module>mytool-http</module>
+        <module>tools-bom</module>
     </modules>
 
     <!--全局依赖-->
@@ -53,6 +54,11 @@
             <dependency>
                 <groupId>com.my.tools</groupId>
                 <artifactId>mytool-monitor</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.my.tools</groupId>
+                <artifactId>mytool-http</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
