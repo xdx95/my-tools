@@ -1,9 +1,10 @@
 package com.my.tools.thread;
 
-import com.my.tools.log.LogUtils;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import com.my.tools.base.LogUtils;
+import com.my.tools.monitor.MonitorManager;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 
@@ -21,11 +22,20 @@ class ThreadUtilsTest {
 
 	@Test
 	void newSingleThreadPool() {
-		ThreadPoolExecutor threadPoolExecutor = ThreadUtils.newSingleThreadPool("test");
-		log.info(ThreadUtils.getThreadPoolName(threadPoolExecutor));
-		ExecutorService executorService = Executors.newFixedThreadPool(5);
-		log.info(ThreadUtils.getThreadPoolName((ThreadPoolExecutor) executorService));
-		executorService.shutdownNow();
-		threadPoolExecutor.shutdownNow();
+		MonitorManager.getInstance().start();
+		ThreadPoolExecutor threadPoolExecutor = ThreadUtils.newFixedThreadPool(3, "fixed");
+		ScheduledExecutorService executorService = ThreadUtils.newScheduledThreadPool(2, "scheduled");
+		for (int i = 0; i < 20; i++) {
+			threadPoolExecutor.execute(() -> {
+				ThreadUtils.sleep(8000);
+			});
+			executorService.scheduleWithFixedDelay(() -> {
+				ThreadUtils.sleep(8000);
+			}, 5, 5, TimeUnit.SECONDS);
+
+		}
+
+
+		ThreadUtils.sleep(60000);
 	}
 }

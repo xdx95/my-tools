@@ -1,8 +1,10 @@
 package com.my.tools.thread;
 
+import com.my.tools.monitor.ThreadPoolMonitor;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -20,13 +22,20 @@ public class ThreadPoolBuilder {
 	public static final int DEFAULT_QUEUE_CAPACITY = 1024;
 
 	/**
+	 * 线程池名
+	 */
+	private String poolName;
+
+	/**
 	 * 初始池大小
 	 */
 	private int corePoolSize;
+
 	/**
 	 * 最大池大小
 	 */
 	private int maxPoolSize;
+
 	/**
 	 * 非核心线程存活时间
 	 */
@@ -51,6 +60,7 @@ public class ThreadPoolBuilder {
 	 * 当线程阻塞（block）时的异常处理器，所谓线程阻塞即线程池和等待队列已满，无法处理线程时采取的策略
 	 */
 	private RejectedExecutionHandler rejectedHandler;
+
 	/**
 	 * 核心线程执行超时后是否回收线程
 	 */
@@ -58,6 +68,11 @@ public class ThreadPoolBuilder {
 
 	public static ThreadPoolBuilder create() {
 		return new ThreadPoolBuilder();
+	}
+
+	public ThreadPoolBuilder poolName(String poolName) {
+		this.poolName = poolName;
+		return this;
 	}
 
 	public ThreadPoolBuilder corePoolSize(int corePoolSize) {
@@ -82,6 +97,10 @@ public class ThreadPoolBuilder {
 
 	public ThreadPoolBuilder threadFactory(ThreadFactory threadFactory) {
 		this.threadFactory = threadFactory;
+		if (threadFactory instanceof NamedThreadFactory) {
+			NamedThreadFactory namedThreadFactory = (NamedThreadFactory) threadFactory;
+			this.poolName = namedThreadFactory.getNamePrefix();
+		}
 		return this;
 	}
 
@@ -104,15 +123,37 @@ public class ThreadPoolBuilder {
 		if (this.workQueue == null) {
 			this.workQueue = new LinkedBlockingQueue<>(DEFAULT_QUEUE_CAPACITY);
 		}
+
 		if (this.rejectedHandler == null) {
 			this.rejectedHandler = RejectPolicy.ABORT.getValue();
 		}
+
 		ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maxPoolSize,
 			keepAliveTime, timeUnit, workQueue, threadFactory, rejectedHandler);
+
 		if (allowCoreThreadTimeOut) {
 			threadPoolExecutor.allowCoreThreadTimeOut(true);
 		}
+		// 注册到线程池监控器
+		ThreadPoolMonitor.getInstance().register(poolName, threadPoolExecutor);
 		return threadPoolExecutor;
+	}
+
+	public ScheduledThreadPoolExecutor buildScheduled() {
+		if (this.rejectedHandler == null) {
+			this.rejectedHandler = RejectPolicy.ABORT.getValue();
+		}
+		ScheduledThreadPoolExecutor scheduledThreadPoolExecutor =
+			new ScheduledThreadPoolExecutor(corePoolSize, threadFactory, rejectedHandler);
+		scheduledThreadPoolExecutor.setMaximumPoolSize(maxPoolSize);
+		scheduledThreadPoolExecutor.setKeepAliveTime(keepAliveTime, timeUnit);
+
+		if (allowCoreThreadTimeOut) {
+			scheduledThreadPoolExecutor.allowCoreThreadTimeOut(true);
+		}
+		// 注册到线程池监控器
+		ThreadPoolMonitor.getInstance().register(poolName, scheduledThreadPoolExecutor);
+		return scheduledThreadPoolExecutor;
 	}
 
 

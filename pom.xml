@@ -13,6 +13,8 @@
         <!--第三方依赖-->
         <logback.version>1.2.13</logback.version>
         <junit.version>5.10.3</junit.version>
+        <jackson.version>2.17.0</jackson.version>
+        <okhttp.version>4.11.0</okhttp.version>
 
         <!-- 构建设置 -->
         <maven.compiler.source>8</maven.compiler.source>
@@ -22,7 +24,6 @@
     </properties>
 
     <modules>
-        <module>mytool-log</module>
         <module>mytool-base</module>
         <module>mytool-thread</module>
         <module>mytool-balancer</module>
@@ -51,7 +52,7 @@
             </dependency>
             <dependency>
                 <groupId>com.my.tools</groupId>
-                <artifactId>mytool-log</artifactId>
+                <artifactId>mytool-monitor</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -71,6 +72,18 @@
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
                 <version>${logback.version}</version>
+            </dependency>
+            <!--jackson-->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <!--okhttp-->
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp</artifactId>
+                <version>${okhttp.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

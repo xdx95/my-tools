@@ -1,4 +1,4 @@
-package com.my.tools.log;
+package com.my.tools.base;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +21,7 @@ public class LogUtils {
 	public static Logger get() {
 		// 获取当前线程的调用栈信息
 		StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-		String className =
-			stackTrace[2].getClassName();
+		String className = stackTrace[2].getClassName();
 		return LoggerFactory.getLogger(className);
 	}
 

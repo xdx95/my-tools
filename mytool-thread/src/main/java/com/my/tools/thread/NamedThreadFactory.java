@@ -1,6 +1,6 @@
 package com.my.tools.thread;
 
-import com.my.tools.log.LogUtils;
+import com.my.tools.base.LogUtils;
 import java.util.HashMap;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -17,6 +17,7 @@ public class NamedThreadFactory implements ThreadFactory {
 
 	// 全局线程组计数器
 	private static final HashMap<String, AtomicInteger> name_prefix_map = new HashMap<>();
+
 	// 线程计数器
 	private final AtomicInteger thread_number = new AtomicInteger(1);
 	// 线程组
@@ -38,7 +39,6 @@ public class NamedThreadFactory implements ThreadFactory {
 			}
 			name_prefix_map.put(this.name_prefix, new AtomicInteger(2));
 		}
-		log.info("new thread factory name prefix:{}",this.name_prefix);
 	}
 
 	/**
