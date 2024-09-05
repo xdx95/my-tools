@@ -9,13 +9,13 @@ import org.slf4j.Logger;
 /**
  * @author: xdx
  * @date: 2024/8/16
- * @description: 自定义线程工厂
+ * @description: 命名线程工厂
  */
 public class NamedThreadFactory implements ThreadFactory {
 
 	public static final Logger log = LogUtils.get();
 
-	// 全局线程组计数器
+	// 线程名集合
 	private static final HashMap<String, AtomicInteger> name_prefix_map = new HashMap<>();
 
 	// 线程计数器

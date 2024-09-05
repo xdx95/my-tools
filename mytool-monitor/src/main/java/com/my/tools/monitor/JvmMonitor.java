@@ -4,7 +4,7 @@ import com.my.tools.base.LogUtils;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import org.slf4j.Logger;
 
@@ -34,13 +34,13 @@ public class JvmMonitor extends AbstractMonitor {
 
 
 	@Override
-	public String type() {
-		return MonitorType.JVM.name();
+	public MonitorType type() {
+		return MonitorType.JVM;
 	}
 
 	@Override
 	public Map<String, Object> collect() {
-		Map<String, Object> jvmMap = new HashMap<>();
+		Map<String, Object> jvmMap = new LinkedHashMap<>();
 		// 获取内存管理 Bean
 		MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
 		MemoryUsage heapMemoryUsage = memoryMXBean.getHeapMemoryUsage();

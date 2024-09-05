@@ -9,10 +9,10 @@ import java.util.Map;
  */
 public interface Monitor {
 
-	// 执行数据采集
+	// 数据采集
 	Map<String, Object> collect();
-
-	String type();
+    // 类型
+	MonitorType type();
 
 	void start();
 

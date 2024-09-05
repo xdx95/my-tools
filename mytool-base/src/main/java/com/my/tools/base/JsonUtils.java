@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import org.slf4j.Logger;
 
 /**
  * @author: xdx
@@ -17,8 +18,11 @@ import java.text.SimpleDateFormat;
  */
 public class JsonUtils {
 
+	private static final Logger log = LogUtils.get();
+
 	private static final ObjectMapper objectMapper = new ObjectMapper();
-	// 日起格式化
+
+	// 日期格式化
 	private static final String STANDARD_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
 	static {
@@ -35,76 +39,72 @@ public class JsonUtils {
 	}
 
 	/**
-	 * 对象转Json格式字符串
-	 *
-	 * @param obj 对象
-	 * @return Json格式字符串
+	 * Object 对象格式化成 JSON 字符串
 	 */
-	public static <T> String obj2String(T obj) {
-		if (obj == null) {
+	public static <T> String format(T object) {
+		if (object == null) {
 			return null;
 		}
 		try {
-			return obj instanceof String ? (String) obj : objectMapper.writeValueAsString(obj);
+			return object instanceof String ? (String) object
+				: objectMapper.writeValueAsString(object);
 		} catch (JsonProcessingException e) {
+			log.error("Json Format Exception", e);
 			return null;
 		}
 	}
 
 	/**
-	 * 对象转Json格式字符串(格式化的Json字符串)
-	 *
-	 * @param obj 对象
-	 * @return 美化的Json格式字符串
+	 * Object 对象格式化成 JSON 字符串，且美化
 	 */
-	public static <T> String obj2StringPretty(T obj) {
-		if (obj == null) {
+	public static <T> String formatAndPretty(T object) {
+		if (object == null) {
 			return null;
 		}
 		try {
-			return obj instanceof String ? (String) obj
-				: objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(obj);
+			return object instanceof String ? (String) object
+				: objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
 		} catch (JsonProcessingException e) {
+			log.error("Json Format Exception", e);
 			return null;
 		}
 	}
 
 	/**
-	 * 字符串转换为自定义对象
-	 *
-	 * @param str   要转换的字符串
-	 * @param clazz 自定义对象的class对象
-	 * @return 自定义对象
+	 * JSON 字符串解析为 Object
 	 */
-	public static <T> T string2Obj(String str, Class<T> clazz) {
+	public static <T> T parse(String str, Class<T> clazz) {
 		if (str == null || str.isEmpty() || clazz == null) {
 			return null;
 		}
 		try {
 			return objectMapper.readValue(str, clazz);
 		} catch (Exception e) {
+			log.error("Json Parse Exception", e);
 			return null;
 		}
 	}
 
-	public static <T> T string2Obj(String str, TypeReference<T> typeReference) {
+	public static <T> T parse(String str, TypeReference<T> typeReference) {
 		if (str == null || str.isEmpty() || typeReference == null) {
 			return null;
 		}
 		try {
 			return objectMapper.readValue(str, typeReference);
 		} catch (IOException e) {
+			log.error("Json Parse Exception", e);
 			return null;
 		}
 	}
 
-	public static <T> T string2Obj(String str, Class<?> collectionClazz,
+	public static <T> T parse(String str, Class<?> collectionClazz,
 		Class<?>... elementClazz) {
 		JavaType javaType = objectMapper.getTypeFactory()
 			.constructParametricType(collectionClazz, elementClazz);
 		try {
 			return objectMapper.readValue(str, javaType);
 		} catch (IOException e) {
+			log.error("Json Parse Exception", e);
 			return null;
 		}
 	}

@@ -2,9 +2,9 @@ package com.my.tools.monitor;
 
 import com.my.tools.base.LogUtils;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import org.slf4j.Logger;
 
@@ -17,7 +17,7 @@ public class ThreadPoolMonitor extends AbstractMonitor {
 
 	public static final Logger log = LogUtils.get();
 	private static final ThreadPoolMonitor INSTANCE = new ThreadPoolMonitor();
-	private final ConcurrentHashMap<String, ExecutorService> executors = new ConcurrentHashMap<>();
+	private final ConcurrentHashMap<String, ThreadPoolExecutor> executors = new ConcurrentHashMap<>();
 
 	/**
 	 * 私有化构造方法，确保只能通过 getInstance() 获取实例
@@ -36,30 +36,29 @@ public class ThreadPoolMonitor extends AbstractMonitor {
 	@Override
 	public void stop() {
 		executors.forEach((key, executor) -> {
-			log.info("{}-线程池实例关闭:{}", type(),key);
+			log.info("{}-线程池实例关闭:{}", type(), key);
 			executor.shutdown();
 		});
 	}
 
 	@Override
-	public String type() {
-		return MonitorType.THREAD_POOL.name();
+	public MonitorType type() {
+		return MonitorType.THREAD;
 	}
 
 	@Override
 	public Map<String, Object> collect() {
 		Map<String, Object> threadPoolDataMap = new HashMap<>();
 		executors.forEach((name, executor) -> {
-			if (executor instanceof ThreadPoolExecutor) {
-				ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) executor;
-				threadPoolDataMap.put(name, threadPoolData(threadPoolExecutor));
+			if (executor != null) {
+				threadPoolDataMap.put(name, threadPoolData(executor));
 			}
 		});
 		return threadPoolDataMap;
 	}
 
 	private Map<String, String> threadPoolData(ThreadPoolExecutor executor) {
-		Map<String, String> tpMap = new HashMap<>();
+		Map<String, String> tpMap = new LinkedHashMap<>();
 		tpMap.put("state", threadPoolState(executor));
 		tpMap.put("core_pool_size", String.valueOf(executor.getCorePoolSize()));
 		tpMap.put("pool_size", String.valueOf(executor.getPoolSize()));
@@ -91,8 +90,8 @@ public class ThreadPoolMonitor extends AbstractMonitor {
 	 *
 	 * @param executor 线程池
 	 */
-	public void register(String name, ExecutorService executor) {
-		log.info("{}-线程池实例注册:{}",type(), name);
+	public void register(String name, ThreadPoolExecutor executor) {
+		log.info("{}-线程池实例注册:{}", type(), name);
 		executors.put(name, executor);
 	}
 }

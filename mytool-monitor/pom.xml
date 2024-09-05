@@ -16,6 +16,10 @@
            <groupId>com.my.tools</groupId>
            <artifactId>mytool-base</artifactId>
        </dependency>
+       <dependency>
+           <groupId>cglib</groupId>
+           <artifactId>cglib</artifactId>
+       </dependency>
    </dependencies>
 
 </project>

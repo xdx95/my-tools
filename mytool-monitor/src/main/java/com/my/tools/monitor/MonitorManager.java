@@ -2,8 +2,9 @@ package com.my.tools.monitor;
 
 import com.my.tools.base.JsonUtils;
 import com.my.tools.base.LogUtils;
+import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -23,66 +24,86 @@ public class MonitorManager {
 	public static final Logger log = LogUtils.get();
 
 	private static final MonitorManager INSTANCE = new MonitorManager();
-	private static final ScheduledThreadPoolExecutor MONITOR_SCHEDULER = initMonitorScheduler();
-	private final ConcurrentHashMap<String, Monitor> monitors = new ConcurrentHashMap<>();
+	private static final ScheduledThreadPoolExecutor SCHEDULER = initMonitorScheduler();
+	private static final ConcurrentHashMap<String, Monitor> MONITORS = new ConcurrentHashMap<>();
+
+	private MonitorConfig config;
 
 	/**
 	 * 私有构造方法，只能单例访问
 	 */
-	private MonitorManager() {}
-
-	// 静态初始化方法
-	static {
-		initialize();
+	private MonitorManager() {
+		// 默认配置
+		this.config = new MonitorConfig();
 	}
-
-	private static void initialize() {
-		// 注册监控器
-		INSTANCE.register(ThreadPoolMonitor.getInstance());
-		INSTANCE.register(JvmMonitor.getInstance());
-		// 注册 JVM 关闭钩子，在应用退出时清理资源
-		Runtime.getRuntime().addShutdownHook(new Thread(INSTANCE::stop));
-	}
-
 
 	public static MonitorManager getInstance() {
 		return INSTANCE;
 	}
 
-	public void register(Monitor monitor) {
-		if (!monitors.containsKey(monitor.type())) {
-			log.info("注册监控器:{}", monitor.type());
-			monitors.put(monitor.type(), monitor);
-		} else {
-			log.info("重复注册监控器:{}", monitor.type());
-		}
+	public MonitorConfig getConfig() {
+		return config;
+	}
 
+	public MonitorManager setConfig(MonitorConfig monitorConfig) {
+		this.config = monitorConfig;
+		return this;
+	}
+
+	// 初始化
+	static {
+		initialize();
+	}
+
+	private static void initialize() {
+		// 注册 JVM 关闭钩子，在应用退出时清理资源
+		Runtime.getRuntime().addShutdownHook(new Thread(INSTANCE::stop));
+	}
+
+	private void register(Monitor monitor) {
+		String type = monitor.type().name().toLowerCase();
+		log.info("manager registered monitor type:{}", type);
+		MONITORS.put(type, monitor);
 	}
 
 	public void start() {
-		monitors.forEach((type, monitor) -> {
-			monitor.start();
+		// 注册监控器
+		Arrays.stream(config.getTypes()).forEach(type -> {
+			MonitorType monitorType = MonitorType.getMonitorType(type);
+			if (monitorType != null) {
+				Monitor monitor = monitorType.getMonitor();
+				INSTANCE.register(monitor);
+				// 监控管理器调度任务线程池
+				if (config.isSelf() && monitorType == MonitorType.THREAD) {
+					((ThreadPoolMonitor) monitor).register("monitor", SCHEDULER);
+				}
+				monitor.start();
+			}
 		});
-		MONITOR_SCHEDULER.scheduleAtFixedRate(() -> {
-			Map<String,Object> monitorData = new HashMap<>();
-			monitorData.put("app_code","test");
+		// 数据收集
+		collect();
+	}
 
+	public void collect() {
+		log.info("manager collect monitor data:{}-{}", config.getAppCode(), config.getTypes());
+		SCHEDULER.scheduleAtFixedRate(() -> {
+			Map<String, Object> monitorData = new LinkedHashMap<>();
+			monitorData.put("app_code", config.getAppCode());
 			monitorData.put("date_time", new Date());
-			monitors.forEach((type, monitor) -> {
-				monitorData.put(monitor.type(),monitor.collect());
+			MONITORS.forEach((type, monitor) -> {
+				monitorData.put(type, monitor.collect());
 			});
 			// 模拟数据发送到监控平台
-			log.info(JsonUtils.obj2StringPretty(monitorData));
-		}, 0, 10, TimeUnit.SECONDS);
-		log.info("监控管理器-start");
+			log.info(JsonUtils.formatAndPretty(monitorData));
+		}, 1, config.getPeriod(), TimeUnit.SECONDS);
 	}
 
 	public void stop() {
-		monitors.forEach((type, monitor) -> {
+		MONITORS.forEach((type, monitor) -> {
 			monitor.stop();
 		});
-		MONITOR_SCHEDULER.shutdown();
-		log.info("监控管理器-stop");
+		SCHEDULER.shutdown();
+		log.info("manager monitor stop");
 	}
 
 	/**

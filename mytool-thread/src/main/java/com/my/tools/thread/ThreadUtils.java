@@ -1,6 +1,7 @@
 package com.my.tools.thread;
 
 import com.my.tools.base.LogUtils;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
@@ -17,6 +18,15 @@ public class ThreadUtils {
 
 	public static final Logger log = LogUtils.get();
 
+	/**
+	 * 默认任务队列容量
+	 */
+	public static final int DEFAULT_QUEUE_CAPACITY = 1024;
+	/**
+	 * 默认最大线程数
+	 */
+	public static final int DEFAULT_MAX_POOL_SIZE = 1024;
+
 	public static ThreadFactory newThreadFactory(String namePrefix) {
 		return new NamedThreadFactory(namePrefix);
 	}
@@ -28,6 +38,8 @@ public class ThreadUtils {
 			.keepAliveTime(0L)
 			.timeUnit(TimeUnit.SECONDS)
 			.threadFactory(newThreadFactory(namePrefix))
+			.workQueue(new LinkedBlockingQueue<>(DEFAULT_QUEUE_CAPACITY))
+			.rejectedHandler(RejectPolicy.ABORT.value())
 			.build();
 	}
 
@@ -38,6 +50,8 @@ public class ThreadUtils {
 			.keepAliveTime(0L)
 			.timeUnit(TimeUnit.SECONDS)
 			.threadFactory(newThreadFactory(namePrefix))
+			.workQueue(new LinkedBlockingQueue<>(DEFAULT_QUEUE_CAPACITY))
+			.rejectedHandler(RejectPolicy.ABORT.value())
 			.build();
 	}
 
@@ -60,7 +74,20 @@ public class ThreadUtils {
 			.timeUnit(TimeUnit.SECONDS)
 			.threadFactory(newThreadFactory(namePrefix))
 			.workQueue(new SynchronousQueue<>())
+			.rejectedHandler(RejectPolicy.ABORT.value())
 			.buildScheduled();
+	}
+
+	public static ThreadPoolExecutor newEagerThreadPool(String namePrefix) {
+		return ThreadPoolBuilder.create()
+			.corePoolSize(1)
+			.maxPoolSize(25)
+			.keepAliveTime(60L)
+			.timeUnit(TimeUnit.SECONDS)
+			.threadFactory(newThreadFactory(namePrefix))
+			.workQueue(new EagerTaskQueue(1024))
+			.rejectedHandler(RejectPolicy.ABORT.value())
+			.buildEager();
 	}
 
 

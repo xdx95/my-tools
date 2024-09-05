@@ -1,6 +1,7 @@
 package com.my.tools.thread;
 
 import com.my.tools.base.LogUtils;
+import com.my.tools.monitor.MonitorConfig;
 import com.my.tools.monitor.MonitorManager;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -20,11 +21,15 @@ class ThreadUtilsTest {
 		new NamedThreadFactory("test");
 	}
 
+
 	@Test
 	void newSingleThreadPool() {
-		MonitorManager.getInstance().start();
+		MonitorManager.getInstance()
+			.setConfig(new MonitorConfig())
+			.start();
 		ThreadPoolExecutor threadPoolExecutor = ThreadUtils.newFixedThreadPool(3, "fixed");
-		ScheduledExecutorService executorService = ThreadUtils.newScheduledThreadPool(2, "scheduled");
+		ScheduledExecutorService executorService = ThreadUtils.newScheduledThreadPool(2,
+			"scheduled");
 		for (int i = 0; i < 20; i++) {
 			threadPoolExecutor.execute(() -> {
 				ThreadUtils.sleep(8000);
@@ -34,8 +39,24 @@ class ThreadUtilsTest {
 			}, 5, 5, TimeUnit.SECONDS);
 
 		}
-
-
 		ThreadUtils.sleep(60000);
+	}
+
+	@Test
+	void newEagerThreadPool() {
+		MonitorManager.getInstance()
+			.start();
+		ThreadPoolExecutor threadPoolExecutor = ThreadUtils.newEagerThreadPool("eager");
+		for (int i = 0; i < 2; i++) {
+			threadPoolExecutor.submit(new Runnable() {
+				@Override
+				public void run() {
+					ThreadUtils.sleep(3000);
+				}
+			});
+		}
+
+		ThreadUtils.sleep(10000);
+		threadPoolExecutor.shutdown();
 	}
 }

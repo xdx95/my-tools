@@ -10,7 +10,6 @@ import org.slf4j.Logger;
  */
 public abstract class AbstractMonitor implements Monitor {
 
-	private static final Logger log = LogUtils.get();
 
 	@Override
 	public void start() {
@@ -18,7 +17,7 @@ public abstract class AbstractMonitor implements Monitor {
 
 	@Override
 	public void stop() {
-		log.info("{}-监控-关闭",type());
+
 	}
 
 }

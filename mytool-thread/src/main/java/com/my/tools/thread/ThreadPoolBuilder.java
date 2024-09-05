@@ -1,8 +1,8 @@
 package com.my.tools.thread;
 
+import com.my.tools.monitor.TaskMonitor;
 import com.my.tools.monitor.ThreadPoolMonitor;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
@@ -15,11 +15,6 @@ import java.util.concurrent.TimeUnit;
  * @description: 线程池执行器构造
  */
 public class ThreadPoolBuilder {
-
-	/**
-	 * 默认的等待队列容量
-	 */
-	public static final int DEFAULT_QUEUE_CAPACITY = 1024;
 
 	/**
 	 * 线程池名
@@ -47,32 +42,23 @@ public class ThreadPoolBuilder {
 	private TimeUnit timeUnit;
 
 	/**
-	 * 线程工厂，用于自定义线程创建
-	 */
-	private ThreadFactory threadFactory;
-
-	/**
 	 * 任务队列，用于存放未执行的线程
 	 */
 	private BlockingQueue<Runnable> workQueue;
+
+	/**
+	 * 线程工厂，用于自定义线程创建
+	 */
+	private ThreadFactory threadFactory;
 
 	/**
 	 * 当线程阻塞（block）时的异常处理器，所谓线程阻塞即线程池和等待队列已满，无法处理线程时采取的策略
 	 */
 	private RejectedExecutionHandler rejectedHandler;
 
-	/**
-	 * 核心线程执行超时后是否回收线程
-	 */
-	private boolean allowCoreThreadTimeOut;
 
 	public static ThreadPoolBuilder create() {
 		return new ThreadPoolBuilder();
-	}
-
-	public ThreadPoolBuilder poolName(String poolName) {
-		this.poolName = poolName;
-		return this;
 	}
 
 	public ThreadPoolBuilder corePoolSize(int corePoolSize) {
@@ -114,47 +100,42 @@ public class ThreadPoolBuilder {
 		return this;
 	}
 
-	public ThreadPoolBuilder allowCoreThreadTimeOut(boolean allowCoreThreadTimeOut) {
-		this.allowCoreThreadTimeOut = allowCoreThreadTimeOut;
-		return this;
-	}
-
 	public ThreadPoolExecutor build() {
-		if (this.workQueue == null) {
-			this.workQueue = new LinkedBlockingQueue<>(DEFAULT_QUEUE_CAPACITY);
-		}
-
-		if (this.rejectedHandler == null) {
-			this.rejectedHandler = RejectPolicy.ABORT.getValue();
-		}
-
-		ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maxPoolSize,
-			keepAliveTime, timeUnit, workQueue, threadFactory, rejectedHandler);
-
-		if (allowCoreThreadTimeOut) {
-			threadPoolExecutor.allowCoreThreadTimeOut(true);
-		}
+		ThreadPoolExecutor threadPoolExecutor = new MonitorThreadPoolExecutor(
+			corePoolSize, maxPoolSize,
+			keepAliveTime, timeUnit,
+			workQueue, threadFactory, rejectedHandler);
 		// 注册到线程池监控器
 		ThreadPoolMonitor.getInstance().register(poolName, threadPoolExecutor);
 		return threadPoolExecutor;
 	}
 
+	/**
+	 * ScheduledThreadPoolExecutor
+	 */
 	public ScheduledThreadPoolExecutor buildScheduled() {
-		if (this.rejectedHandler == null) {
-			this.rejectedHandler = RejectPolicy.ABORT.getValue();
-		}
 		ScheduledThreadPoolExecutor scheduledThreadPoolExecutor =
-			new ScheduledThreadPoolExecutor(corePoolSize, threadFactory, rejectedHandler);
+			new ScheduledThreadPoolExecutor(
+				corePoolSize, threadFactory, rejectedHandler);
 		scheduledThreadPoolExecutor.setMaximumPoolSize(maxPoolSize);
 		scheduledThreadPoolExecutor.setKeepAliveTime(keepAliveTime, timeUnit);
-
-		if (allowCoreThreadTimeOut) {
-			scheduledThreadPoolExecutor.allowCoreThreadTimeOut(true);
-		}
 		// 注册到线程池监控器
 		ThreadPoolMonitor.getInstance().register(poolName, scheduledThreadPoolExecutor);
 		return scheduledThreadPoolExecutor;
 	}
 
+	/**
+	 * EagerThreadPoolExecutor
+	 */
+	public EagerThreadPoolExecutor buildEager() {
+		EagerThreadPoolExecutor eagerThreadPoolExecutor = new EagerThreadPoolExecutor(
+			corePoolSize, maxPoolSize,
+			keepAliveTime, timeUnit,
+			workQueue, threadFactory, rejectedHandler);
+		((EagerTaskQueue) workQueue).setExecutor(eagerThreadPoolExecutor);
+		// 注册到线程池监控器
+		ThreadPoolMonitor.getInstance().register(poolName, eagerThreadPoolExecutor);
+		return eagerThreadPoolExecutor;
+	}
 
 }
