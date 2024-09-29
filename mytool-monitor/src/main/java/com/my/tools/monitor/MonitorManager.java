@@ -1,12 +1,13 @@
 package com.my.tools.monitor;
 
+import com.my.tools.base.DateUtils;
 import com.my.tools.base.JsonUtils;
 import com.my.tools.base.LogUtils;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor.DiscardPolicy;
@@ -24,8 +25,8 @@ public class MonitorManager {
 	public static final Logger log = LogUtils.get();
 
 	private static final MonitorManager INSTANCE = new MonitorManager();
+	private static final List<Monitor> MONITORS = new CopyOnWriteArrayList<>();
 	private static final ScheduledThreadPoolExecutor SCHEDULER = initMonitorScheduler();
-	private static final ConcurrentHashMap<String, Monitor> MONITORS = new ConcurrentHashMap<>();
 
 	private MonitorConfig config;
 
@@ -61,9 +62,8 @@ public class MonitorManager {
 	}
 
 	private void register(Monitor monitor) {
-		String type = monitor.type().name().toLowerCase();
-		log.info("manager registered monitor type:{}", type);
-		MONITORS.put(type, monitor);
+		log.info("manager registered monitor type:{}", monitor.type().name().toLowerCase());
+		MONITORS.add(monitor);
 	}
 
 	public void start() {
@@ -73,10 +73,6 @@ public class MonitorManager {
 			if (monitorType != null) {
 				Monitor monitor = monitorType.getMonitor();
 				INSTANCE.register(monitor);
-				// 监控管理器调度任务线程池
-				if (config.isSelf() && monitorType == MonitorType.THREAD) {
-					((ThreadPoolMonitor) monitor).register("monitor", SCHEDULER);
-				}
 				monitor.start();
 			}
 		});
@@ -89,9 +85,9 @@ public class MonitorManager {
 		SCHEDULER.scheduleAtFixedRate(() -> {
 			Map<String, Object> monitorData = new LinkedHashMap<>();
 			monitorData.put("app_code", config.getAppCode());
-			monitorData.put("date_time", new Date());
-			MONITORS.forEach((type, monitor) -> {
-				monitorData.put(type, monitor.collect());
+			monitorData.put("date_time", DateUtils.getCurrentDateTime());
+			MONITORS.forEach((monitor) -> {
+				monitorData.putAll(monitor.collect());
 			});
 			// 模拟数据发送到监控平台
 			log.info(JsonUtils.formatAndPretty(monitorData));
@@ -99,9 +95,7 @@ public class MonitorManager {
 	}
 
 	public void stop() {
-		MONITORS.forEach((type, monitor) -> {
-			monitor.stop();
-		});
+		MONITORS.forEach(Monitor::stop);
 		SCHEDULER.shutdown();
 		log.info("manager monitor stop");
 	}

@@ -1,4 +1,4 @@
-package com.my.tools.thread;
+package com.my.tools.thread.core;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
@@ -8,9 +8,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * @author: xdx
- * @date: 2024/8/30
- * @description: IO 特性线程池 优先创建线程去执行任务，当满足最大线程池后，进入任务队列
+ * 积极型线程池
+ * 特性线程池 优先创建线程去执行任务，当满足最大线程池后，进入任务队列
  */
 public class EagerThreadPoolExecutor extends MonitorThreadPoolExecutor {
 

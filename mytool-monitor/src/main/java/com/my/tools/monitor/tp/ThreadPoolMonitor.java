@@ -1,8 +1,9 @@
-package com.my.tools.monitor;
+package com.my.tools.monitor.tp;
 
 import com.my.tools.base.LogUtils;
+import com.my.tools.monitor.AbstractMonitor;
+import com.my.tools.monitor.MonitorType;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -57,18 +58,18 @@ public class ThreadPoolMonitor extends AbstractMonitor {
 		return threadPoolDataMap;
 	}
 
-	private Map<String, String> threadPoolData(ThreadPoolExecutor executor) {
-		Map<String, String> tpMap = new LinkedHashMap<>();
-		tpMap.put("state", threadPoolState(executor));
-		tpMap.put("core_pool_size", String.valueOf(executor.getCorePoolSize()));
-		tpMap.put("pool_size", String.valueOf(executor.getPoolSize()));
-		tpMap.put("largest_pool_size", String.valueOf(executor.getLargestPoolSize()));
-		tpMap.put("max_pool_size", String.valueOf(executor.getMaximumPoolSize()));
-		tpMap.put("completed_task", String.valueOf(executor.getCompletedTaskCount()));
-		tpMap.put("active_task", String.valueOf(executor.getActiveCount()));
-		tpMap.put("queue_task", String.valueOf(executor.getQueue().size()));
-		tpMap.put("task", String.valueOf(executor.getTaskCount()));
-		return tpMap;
+	private ThreadPoolInfo threadPoolData(ThreadPoolExecutor executor) {
+		ThreadPoolInfo threadPoolInfo = new ThreadPoolInfo();
+		threadPoolInfo.setState(threadPoolState(executor));
+		threadPoolInfo.setCore_pool_size(executor.getCorePoolSize());
+		threadPoolInfo.setPool_size(executor.getPoolSize());
+		threadPoolInfo.setLargest_pool_size(executor.getLargestPoolSize());
+		threadPoolInfo.setMax_pool_size(executor.getMaximumPoolSize());
+		threadPoolInfo.setCompleted_task(executor.getCompletedTaskCount());
+		threadPoolInfo.setActive_task(executor.getActiveCount());
+		threadPoolInfo.setQueue_task(executor.getQueue().size());
+		threadPoolInfo.setTask(executor.getTaskCount());
+		return threadPoolInfo;
 	}
 
 	private String threadPoolState(ThreadPoolExecutor executor) {

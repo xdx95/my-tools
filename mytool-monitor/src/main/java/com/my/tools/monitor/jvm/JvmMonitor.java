@@ -1,6 +1,8 @@
-package com.my.tools.monitor;
+package com.my.tools.monitor.jvm;
 
 import com.my.tools.base.LogUtils;
+import com.my.tools.monitor.AbstractMonitor;
+import com.my.tools.monitor.MonitorType;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
@@ -45,12 +47,14 @@ public class JvmMonitor extends AbstractMonitor {
 		MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
 		MemoryUsage heapMemoryUsage = memoryMXBean.getHeapMemoryUsage();
 		MemoryUsage nonHeapMemoryUsage = memoryMXBean.getNonHeapMemoryUsage();
-		jvmMap.put("heap_memory_init", heapMemoryUsage.getInit());
-		jvmMap.put("heap_memory_used", heapMemoryUsage.getUsed());
-		jvmMap.put("heap_memory_max", heapMemoryUsage.getMax());
-		jvmMap.put("non_heap_memory_init", nonHeapMemoryUsage.getInit());
-		jvmMap.put("non_heap_memory_used", nonHeapMemoryUsage.getUsed());
-		jvmMap.put("non_heap_memory_max", nonHeapMemoryUsage.getMax());
+		JvmInfo jvmInfo = new JvmInfo();
+		jvmInfo.setHeap_memory_init(heapMemoryUsage.getInit());
+		jvmInfo.setHeap_memory_used(heapMemoryUsage.getUsed());
+		jvmInfo.setHeap_memory_max(heapMemoryUsage.getMax());
+		jvmInfo.setNon_heap_memory_init(nonHeapMemoryUsage.getInit());
+		jvmInfo.setNon_heap_memory_used(nonHeapMemoryUsage.getUsed());
+		jvmInfo.setNon_heap_memory_max(nonHeapMemoryUsage.getMax());
+		jvmMap.put(type().name().toLowerCase(), jvmInfo);
 		return jvmMap;
 	}
 }

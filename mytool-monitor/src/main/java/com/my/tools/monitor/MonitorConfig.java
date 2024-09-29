@@ -8,19 +8,18 @@ package com.my.tools.monitor;
 public class MonitorConfig {
 
 	// 应用编码
-	private String appCode = "MY";
+	private  String appCode = "MY";
 	// 开启监控
-	private boolean enable = true;
-	// 是否监控自己
-	private boolean self = true;
-	// 监控器
-	private String[] types = {MonitorType.THREAD.name().toLowerCase(),MonitorType.TASK.name().toLowerCase()};
-	// 任务调度间隔
+	private boolean enable = false;
+	// 监控器类型
+	private String[] types = {"thread","task"};
+	// 数据采集间隔
 	private int period = 5;
-	// 慢任务
-	private int slowTaskTime = 3000;
-	// 监控平台服务地址
+	// 慢任务时间
+	private int slowTaskTime = 5000;
+	// 数据采集平台服务地址
 	private String[] monitorServers = {};
+
 
 	public String getAppCode() {
 		return appCode;
@@ -36,14 +35,6 @@ public class MonitorConfig {
 
 	public void setEnable(boolean enable) {
 		this.enable = enable;
-	}
-
-	public boolean isSelf() {
-		return self;
-	}
-
-	public void setSelf(boolean self) {
-		this.self = self;
 	}
 
 	public int getSlowTaskTime() {

@@ -1,4 +1,4 @@
-package com.my.tools.thread;
+package com.my.tools.thread.core;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;

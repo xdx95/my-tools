@@ -31,6 +31,7 @@
         <module>mytool-monitor</module>
         <module>mytool-http</module>
         <module>tools-bom</module>
+        <module>mytool-test</module>
     </modules>
 
     <!--全局依赖-->

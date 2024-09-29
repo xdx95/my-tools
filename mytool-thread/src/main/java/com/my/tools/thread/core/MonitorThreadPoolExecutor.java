@@ -1,25 +1,19 @@
-package com.my.tools.thread;
+package com.my.tools.thread.core;
 
-import com.my.tools.base.LogUtils;
-import com.my.tools.monitor.TaskInfo;
-import com.my.tools.monitor.TaskMonitor;
+import com.my.tools.monitor.task.TaskInfo;
+import com.my.tools.monitor.task.TaskMonitor;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import org.slf4j.Logger;
 
 /**
- * @author: xdx
- * @date: 2024/9/5
- * @description:
+ * 监控线程池
  */
 public class MonitorThreadPoolExecutor extends ThreadPoolExecutor {
 
-	public static final Logger log = LogUtils.get();
-
-	private static final ThreadLocal<TaskInfo> threadLocal = new ThreadLocal<>();
+	private final ThreadLocal<TaskInfo> threadLocal = new ThreadLocal<>();
 
 	public MonitorThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime,
 		TimeUnit unit, BlockingQueue<Runnable> workQueue,
@@ -40,7 +34,7 @@ public class MonitorThreadPoolExecutor extends ThreadPoolExecutor {
 	protected void afterExecute(Runnable r, Throwable t) {
 		super.afterExecute(r, t);
 		TaskInfo taskInfo = threadLocal.get();
-		taskInfo.setEndTime(System.currentTimeMillis());
+		taskInfo.updateDuration(System.currentTimeMillis());
 		TaskMonitor.getInstance().register(taskInfo);
 		threadLocal.remove();
 	}

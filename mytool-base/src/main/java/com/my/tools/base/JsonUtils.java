@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 /**
  * @author: xdx
  * @date: 2024/8/29
- * @description: Json 工具类
+ * @description: Jackson 工具类
  */
 public class JsonUtils {
 

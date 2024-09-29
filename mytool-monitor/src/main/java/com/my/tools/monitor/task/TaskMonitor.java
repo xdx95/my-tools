@@ -1,7 +1,11 @@
-package com.my.tools.monitor;
+package com.my.tools.monitor.task;
 
-import com.my.tools.base.JsonUtils;
 import com.my.tools.base.LogUtils;
+import com.my.tools.monitor.AbstractMonitor;
+import com.my.tools.monitor.MonitorManager;
+import com.my.tools.monitor.MonitorType;
+import com.my.tools.monitor.RingBuffer;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import org.slf4j.Logger;
 
@@ -16,10 +20,12 @@ public class TaskMonitor extends AbstractMonitor {
 
 	private static final TaskMonitor INSTANCE = new TaskMonitor();
 
-	private static final int slowTaskTime = MonitorManager.getInstance().getConfig()
-		.getSlowTaskTime();
+	private final RingBuffer<TaskInfo> ringBuffer = new RingBuffer<>();
+
+	private static final int slowTaskTime = MonitorManager.getInstance().getConfig().getSlowTaskTime();
 
 	private TaskMonitor() {
+
 	}
 
 	/**
@@ -34,19 +40,21 @@ public class TaskMonitor extends AbstractMonitor {
 	 * 注册任务
 	 */
 	public void register(TaskInfo taskInfo) {
-		long duration = taskInfo.getEndTime() - taskInfo.getStartTime();
-		if (duration > slowTaskTime) {
-			log.info("{}", JsonUtils.format(taskInfo));
+		if (taskInfo.duration() > slowTaskTime) {
+			ringBuffer.write(taskInfo);
 		}
 	}
 
 	@Override
 	public Map<String, Object> collect() {
-		return null;
+		Map<String, Object> taskMap = new LinkedHashMap<>();
+		taskMap.put(type().name().toLowerCase(),ringBuffer.readAll());
+		return taskMap;
 	}
 
 	@Override
 	public MonitorType type() {
 		return MonitorType.TASK;
 	}
+
 }

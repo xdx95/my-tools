@@ -1,4 +1,4 @@
-package com.my.tools.monitor;
+package com.my.tools.monitor.task;
 
 /**
  * @author: xdx
@@ -7,26 +7,26 @@ package com.my.tools.monitor;
  */
 public class TaskInfo {
 
-	private  Long id;
+	private  long id;
 	private  String name;
 	private  String message;
-	private  Long startTime;
-	private  Long endTime;
+	private  long start_time;
+	private  long duration;
 
 	public TaskInfo() {
 	}
 
-	public TaskInfo(Long id, String name, Long startTime) {
+	public TaskInfo(long id, String name, long startTime) {
 		this.id = id;
 		this.name = name;
-		this.startTime = startTime;
+		this.start_time = startTime;
 	}
 
-	public Long getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -46,19 +46,15 @@ public class TaskInfo {
 		this.message = message;
 	}
 
-	public Long getStartTime() {
-		return startTime;
+	public void setStarTime(long startTime) {
+		this.start_time = startTime;
 	}
 
-	public void setStartTime(Long startTime) {
-		this.startTime = startTime;
+	public void updateDuration(long endTime) {
+		this.duration = endTime -this.start_time;
 	}
 
-	public Long getEndTime() {
-		return endTime;
-	}
-
-	public void setEndTime(Long endTime) {
-		this.endTime = endTime;
+	public long duration() {
+		return duration;
 	}
 }
