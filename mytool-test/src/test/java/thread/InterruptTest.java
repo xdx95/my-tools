@@ -1,7 +1,7 @@
 package thread;
 
-import com.my.tools.thread.ThreadPoolBuilder;
-import com.my.tools.thread.ThreadUtils;
+import com.mytools.thread.ThreadPoolBuilder;
+import com.mytools.thread.ThreadUtils;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.RejectedExecutionHandler;

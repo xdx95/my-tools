@@ -4,20 +4,20 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.my.tools</groupId>
-        <artifactId>my-tools-parent</artifactId>
-        <version>1.0.0</version>
+        <groupId>com.mytools</groupId>
+        <artifactId>mytools-parent</artifactId>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>mytool-balancer</artifactId>
-
+    <version>${revision}</version>
     <dependencies>
         <dependency>
-            <groupId>com.my.tools</groupId>
+            <groupId>com.mytools</groupId>
             <artifactId>mytool-thread</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.my.tools</groupId>
+            <groupId>com.mytools</groupId>
             <artifactId>mytool-base</artifactId>
         </dependency>
     </dependencies>

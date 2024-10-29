@@ -1,17 +1,14 @@
 package thread;
 
-import com.my.tools.base.LogUtils;
-import com.my.tools.base.RandomUtils;
-import com.my.tools.monitor.MonitorConfig;
-import com.my.tools.monitor.MonitorManager;
-import com.my.tools.thread.ThreadUtils;
-import com.my.tools.thread.core.NamedThreadFactory;
-import com.my.tools.thread.policy.RejectPolicy;
+import com.mytools.base.LogUtils;
+import com.mytools.base.RandomUtils;
+import com.mytools.monitor.MonitorConfig;
+import com.mytools.monitor.MonitorManager;
+import com.mytools.thread.ThreadUtils;
+import com.mytools.thread.core.NamedThreadFactory;
+import com.mytools.thread.policy.RejectPolicy;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
