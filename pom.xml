@@ -34,6 +34,7 @@
         <module>mytool-http</module>
         <module>tools-bom</module>
         <module>mytool-encryption</module>
+        <module>test</module>
     </modules>
 
     <!--全局依赖-->
