@@ -9,18 +9,7 @@
         <version>${revision}</version>
     </parent>
 
-    <artifactId>mytool-thread</artifactId>
+    <artifactId>test</artifactId>
     <version>${revision}</version>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.mytools</groupId>
-            <artifactId>mytool-base</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.mytools</groupId>
-            <artifactId>mytool-monitor</artifactId>
-        </dependency>
-    </dependencies>
 
 </project>
