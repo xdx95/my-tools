@@ -12,5 +12,6 @@ public class Base64UtilsTest {
 
 	@Test
 	public void decode() {
+		
 	}
 }
