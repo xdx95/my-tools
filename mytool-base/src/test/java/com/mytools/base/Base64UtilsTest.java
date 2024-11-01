@@ -11,10 +11,6 @@ public class Base64UtilsTest {
 		System.out.println("第二次提交 git test");
 
 		System.out.println("第四次提交 git test");
-
-		System.out.println("第五次提交 git test");
-
-		System.out.println("第6次提交 git test");
 	}
 
 	@Test
