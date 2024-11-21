@@ -17,32 +17,32 @@
         <dependencies>
             <dependency>
                 <groupId>com.mytools</groupId>
-                <artifactId>mytool-balancer</artifactId>
+                <artifactId>balancer</artifactId>
                 <version>${project.version} </version>
             </dependency>
             <dependency>
                 <groupId>com.mytools</groupId>
-                <artifactId>mytool-base</artifactId>
+                <artifactId>base</artifactId>
                 <version>${project.version} </version>
             </dependency>
             <dependency>
                 <groupId>com.mytools</groupId>
-                <artifactId>mytool-encryption</artifactId>
+                <artifactId>encrypt</artifactId>
                 <version>${project.version} </version>
             </dependency>
             <dependency>
                 <groupId>com.mytools</groupId>
-                <artifactId>mytool-http</artifactId>
+                <artifactId>http</artifactId>
                 <version>${project.version} </version>
             </dependency>
             <dependency>
                 <groupId>com.mytools</groupId>
-                <artifactId>mytool-monitor</artifactId>
+                <artifactId>monitor</artifactId>
                 <version>${project.version} </version>
             </dependency>
             <dependency>
                 <groupId>com.mytools</groupId>
-                <artifactId>mytool-thread</artifactId>
+                <artifactId>thread</artifactId>
                 <version>${project.version} </version>
             </dependency>
         </dependencies>

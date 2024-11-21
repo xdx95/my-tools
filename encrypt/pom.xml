@@ -9,13 +9,13 @@
         <version>${revision}</version>
     </parent>
 
-    <artifactId>mytool-encryption</artifactId>
+    <artifactId>encrypt</artifactId>
     <version>${revision}</version>
 
     <dependencies>
         <dependency>
             <groupId>com.mytools</groupId>
-            <artifactId>mytool-base</artifactId>
+            <artifactId>base</artifactId>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>

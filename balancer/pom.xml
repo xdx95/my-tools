@@ -9,13 +9,16 @@
         <version>${revision}</version>
     </parent>
 
-    <artifactId>mytool-http</artifactId>
+    <artifactId>balancer</artifactId>
     <version>${revision}</version>
-
     <dependencies>
         <dependency>
-            <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>okhttp</artifactId>
+            <groupId>com.mytools</groupId>
+            <artifactId>thread</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.mytools</groupId>
+            <artifactId>base</artifactId>
         </dependency>
     </dependencies>
 
