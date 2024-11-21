@@ -29,13 +29,13 @@
 
     <!--子模块-->
     <modules>
-        <module>base</module>
-        <module>thread</module>
-        <module>balancer</module>
-        <module>monitor</module>
-        <module>http</module>
+        <module>tools-base</module>
+        <module>tools-thread</module>
+        <module>tools-balancer</module>
+        <module>tools-monitor</module>
+        <module>tools-http</module>
         <module>tools-bom</module>
-        <module>encrypt</module>
+        <module>tools-encrypt</module>
         <module>test</module>
     </modules>
 
@@ -55,32 +55,32 @@
             <!--本项目模块-->
             <dependency>
                 <groupId>com.my</groupId>
-                <artifactId>balancer</artifactId>
+                <artifactId>tools-balancer</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.my</groupId>
-                <artifactId>base</artifactId>
+                <artifactId>tools-base</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.my</groupId>
-                <artifactId>encrypt</artifactId>
+                <artifactId>tools-encrypt</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.my</groupId>
-                <artifactId>http</artifactId>
+                <artifactId>tools-http</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.my</groupId>
-                <artifactId>monitor</artifactId>
+                <artifactId>tools-monitor</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.my</groupId>
-                <artifactId>thread</artifactId>
+                <artifactId>tools-thread</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

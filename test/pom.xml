@@ -9,7 +9,7 @@
         <version>${revision}</version>
     </parent>
 
-    <artifactId>test</artifactId>
+    <artifactId>tools-test</artifactId>
     <version>${revision}</version>
 
 </project>
