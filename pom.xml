@@ -3,7 +3,6 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>com.mytools</groupId>
     <artifactId>mytools-parent</artifactId>
     <version>${revision}</version>
@@ -11,7 +10,8 @@
 
     <properties>
         <!--统一版本-->
-        <revision>1.0.0</revision>
+        <revision>1.0.0-SNAPSHOT</revision>
+
         <!--第三方依赖-->
         <lombok.version>1.18.30</lombok.version>
         <junit.version>4.12</junit.version>
@@ -20,20 +20,22 @@
         <okhttp.version>4.11.0</okhttp.version>
         <cglib.version>3.3.0</cglib.version>
         <bouncycastle.version>1.68</bouncycastle.version>
-        <!-- 构建设置 -->
+
+        <!-- 编译和构建 -->
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <!--子模块-->
     <modules>
-        <module>mytool-base</module>
-        <module>mytool-thread</module>
-        <module>mytool-balancer</module>
-        <module>mytool-monitor</module>
-        <module>mytool-http</module>
+        <module>base</module>
+        <module>thread</module>
+        <module>balancer</module>
+        <module>monitor</module>
+        <module>http</module>
         <module>tools-bom</module>
-        <module>mytool-encryption</module>
+        <module>encrypt</module>
         <module>test</module>
     </modules>
 
@@ -50,35 +52,35 @@
     <!--依赖管理-->
     <dependencyManagement>
         <dependencies>
-            <!--本工程模块-->
+            <!--本项目模块-->
             <dependency>
                 <groupId>com.mytools</groupId>
-                <artifactId>mytool-balancer</artifactId>
+                <artifactId>balancer</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.mytools</groupId>
-                <artifactId>mytool-base</artifactId>
+                <artifactId>base</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.mytools</groupId>
-                <artifactId>mytool-encryption</artifactId>
+                <artifactId>encrypt</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.mytools</groupId>
-                <artifactId>mytool-http</artifactId>
+                <artifactId>http</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.mytools</groupId>
-                <artifactId>mytool-monitor</artifactId>
+                <artifactId>monitor</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.mytools</groupId>
-                <artifactId>mytool-thread</artifactId>
+                <artifactId>thread</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -131,6 +133,7 @@
 
     <build>
         <plugins>
+            <!-- Maven Compiler Plugin: 用于设置编译 Java 源码 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -141,29 +144,60 @@
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
             </plugin>
-            <!--配置 jar 包中 MANIFEST.MF 文件信息-->
+
+            <!-- Flatten Maven Plugin: 用于生成简化的 POM 文件和版本统一管理 -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.4.0</version>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- 父模块跳过 flatten 操作，仅对子模块执行 -->
+                    <skip>${project.parent == null}</skip>
+                    <!-- 指定生成的 flattened-pom.xml 文件存放目录 -->
+                    <outputDirectory>${project.build.directory}</outputDirectory>
+                    <!-- 配置生成的 flattened-pom.xml 文件名 -->
+                    <flattenedPomFilename>${project.artifactId}.flattened-pom.xml</flattenedPomFilename>
+                    <!-- 仅解析 CI 友好的属性，例如 revision 等 -->
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+            </plugin>
+
+            <!-- Maven Jar Plugin: 用于自定义生成 JAR 包的清单文件和其他属性 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.3.0</version>
                 <configuration>
                     <archive>
-                        <index>true</index>
-                        <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                        </manifest>
+                        <!-- 是否添加 Maven 描述符文件 (pom.xml) 到 JAR 包中 -->
+                        <addMavenDescriptor>true</addMavenDescriptor>
+                        <!-- 定义自定义清单文件中的条目 -->
                         <manifestEntries>
-                            <Build-Jdk>${java.version}</Build-Jdk>
-                            <Build-Timestamp>${maven.build.timestamp}</Build-Timestamp>
-                            <Automatic-Module-Name>${project.groupId}</Automatic-Module-Name>
+                            <Artifact-Id>${project.artifactId}</Artifact-Id>
+                            <Group-Id>${project.groupId}</Group-Id>
+                            <Version>${project.version}</Version>
                         </manifestEntries>
                     </archive>
                 </configuration>
             </plugin>
         </plugins>
+        <!--定义资源文件目录和过滤规则，确保 Maven 将指定资源文件打包到最终构件中。-->
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.xml</include>
+                </includes>
             </resource>
         </resources>
     </build>

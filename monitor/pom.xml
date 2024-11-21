@@ -9,13 +9,13 @@
         <version>${revision}</version>
     </parent>
 
-    <artifactId>mytool-monitor</artifactId>
+    <artifactId>monitor</artifactId>
     <version>${revision}</version>
 
    <dependencies>
        <dependency>
            <groupId>com.mytools</groupId>
-           <artifactId>mytool-base</artifactId>
+           <artifactId>base</artifactId>
        </dependency>
        <dependency>
            <groupId>cglib</groupId>
