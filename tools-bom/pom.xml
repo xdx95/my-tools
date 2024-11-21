@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <parent>
-        <groupId>com.my.tools</groupId>
-        <artifactId>my-tools-parent</artifactId>
+        <groupId>com.my</groupId>
+        <artifactId>my-tools</artifactId>
         <version>${revision}</version>
     </parent>
 
@@ -16,32 +16,32 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.my.tools</groupId>
+                <groupId>com.my</groupId>
                 <artifactId>balancer</artifactId>
                 <version>${project.version} </version>
             </dependency>
             <dependency>
-                <groupId>com.my.tools</groupId>
+                <groupId>com.my</groupId>
                 <artifactId>base</artifactId>
                 <version>${project.version} </version>
             </dependency>
             <dependency>
-                <groupId>com.my.tools</groupId>
+                <groupId>com.my</groupId>
                 <artifactId>encrypt</artifactId>
                 <version>${project.version} </version>
             </dependency>
             <dependency>
-                <groupId>com.my.tools</groupId>
+                <groupId>com.my</groupId>
                 <artifactId>http</artifactId>
                 <version>${project.version} </version>
             </dependency>
             <dependency>
-                <groupId>com.my.tools</groupId>
+                <groupId>com.my</groupId>
                 <artifactId>monitor</artifactId>
                 <version>${project.version} </version>
             </dependency>
             <dependency>
-                <groupId>com.my.tools</groupId>
+                <groupId>com.my</groupId>
                 <artifactId>thread</artifactId>
                 <version>${project.version} </version>
             </dependency>

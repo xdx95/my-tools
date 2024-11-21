@@ -3,8 +3,8 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.my.tools</groupId>
-    <artifactId>my-tools-parent</artifactId>
+    <groupId>com.my</groupId>
+    <artifactId>my-tools</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
 
@@ -54,32 +54,32 @@
         <dependencies>
             <!--本项目模块-->
             <dependency>
-                <groupId>com.my.tools</groupId>
+                <groupId>com.my</groupId>
                 <artifactId>balancer</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.my.tools</groupId>
+                <groupId>com.my</groupId>
                 <artifactId>base</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.my.tools</groupId>
+                <groupId>com.my</groupId>
                 <artifactId>encrypt</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.my.tools</groupId>
+                <groupId>com.my</groupId>
                 <artifactId>http</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.my.tools</groupId>
+                <groupId>com.my</groupId>
                 <artifactId>monitor</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.my.tools</groupId>
+                <groupId>com.my</groupId>
                 <artifactId>thread</artifactId>
                 <version>${project.version}</version>
             </dependency>
