@@ -9,7 +9,18 @@
         <version>${revision}</version>
     </parent>
 
-    <artifactId>tools-test</artifactId>
+    <artifactId>tools-monitor</artifactId>
     <version>${revision}</version>
+
+   <dependencies>
+       <dependency>
+           <groupId>com.my</groupId>
+           <artifactId>tools-base</artifactId>
+       </dependency>
+       <dependency>
+           <groupId>cglib</groupId>
+           <artifactId>cglib</artifactId>
+       </dependency>
+   </dependencies>
 
 </project>

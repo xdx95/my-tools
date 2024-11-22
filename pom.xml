@@ -3,14 +3,14 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.mytools</groupId>
-    <artifactId>mytools-parent</artifactId>
+    <groupId>com.my</groupId>
+    <artifactId>my-tools</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
 
     <properties>
         <!--统一版本-->
-        <revision>1.0.0-SNAPSHOT</revision>
+        <revision>1.0.1</revision>
 
         <!--第三方依赖-->
         <lombok.version>1.18.30</lombok.version>
@@ -29,13 +29,13 @@
 
     <!--子模块-->
     <modules>
-        <module>base</module>
-        <module>thread</module>
-        <module>balancer</module>
-        <module>monitor</module>
-        <module>http</module>
+        <module>tools-base</module>
+        <module>tools-thread</module>
+        <module>tools-balancer</module>
+        <module>tools-monitor</module>
+        <module>tools-http</module>
         <module>tools-bom</module>
-        <module>encrypt</module>
+        <module>tools-encrypt</module>
         <module>test</module>
     </modules>
 
@@ -54,33 +54,33 @@
         <dependencies>
             <!--本项目模块-->
             <dependency>
-                <groupId>com.mytools</groupId>
-                <artifactId>balancer</artifactId>
+                <groupId>com.my</groupId>
+                <artifactId>tools-balancer</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.mytools</groupId>
-                <artifactId>base</artifactId>
+                <groupId>com.my</groupId>
+                <artifactId>tools-base</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.mytools</groupId>
-                <artifactId>encrypt</artifactId>
+                <groupId>com.my</groupId>
+                <artifactId>tools-encrypt</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.mytools</groupId>
-                <artifactId>http</artifactId>
+                <groupId>com.my</groupId>
+                <artifactId>tools-http</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.mytools</groupId>
-                <artifactId>monitor</artifactId>
+                <groupId>com.my</groupId>
+                <artifactId>tools-monitor</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.mytools</groupId>
-                <artifactId>thread</artifactId>
+                <groupId>com.my</groupId>
+                <artifactId>tools-thread</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -182,9 +182,9 @@
                         <addMavenDescriptor>true</addMavenDescriptor>
                         <!-- 定义自定义清单文件中的条目 -->
                         <manifestEntries>
-                            <Artifact-Id>${project.artifactId}</Artifact-Id>
-                            <Group-Id>${project.groupId}</Group-Id>
-                            <Version>${project.version}</Version>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Implementation-Title>${project.artifactId}</Implementation-Title>
+                            <Implementation-Vendor>${project.groupId}</Implementation-Vendor>
                         </manifestEntries>
                     </archive>
                 </configuration>

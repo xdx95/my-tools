@@ -9,7 +9,17 @@
         <version>${revision}</version>
     </parent>
 
-    <artifactId>tools-test</artifactId>
+    <artifactId>tools-balancer</artifactId>
     <version>${revision}</version>
+    <dependencies>
+        <dependency>
+            <groupId>com.my</groupId>
+            <artifactId>tools-thread</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.my</groupId>
+            <artifactId>tools-base</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>
